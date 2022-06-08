@@ -2,6 +2,7 @@
 import './App.css';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import {useState} from 'react';
 
 function Header(props){ //component 이름은 반드시 대문자로 시작해야한다
   return <header><h1><a href="/" onClick={(evt)=> {
@@ -16,7 +17,7 @@ function Nav(props) {
   const liTags = props.data.map((e)=> {
     return <li key={e.id}><a href={'/read/'+e.id} onClick={(evt)=> {
       evt.preventDefault();
-      props.onSelect();
+      props.onSelect(e.id);
     }}>{e.title}</a></li>
   });
   return <nav>
@@ -35,20 +36,42 @@ function Article(props){
 }
 
 function App() {
+  const [mode, setMode] = useState('WELCOME'); //useState 값은 기본값
+  
   const topics = [
     {id :1, title: 'html', body: 'html is ...'},
     {id :2, title: 'css', body: 'css is ...'},
     {id :3, title: 'js', body: 'js is ...'}
   ];
+  const [id, setId] = useState(null);
+  let content = null;
+  if (mode === 'WELCOME'){
+    content = <Article title="Welcome!!!!!" body="Hello, WEB!"></Article>
+  } else if(mode === 'READ'){
+    const topic = topics.filter(e=> {
+      if(e.id === id){
+        return true;
+      } else {
+        return false;
+      }
+    })[0];
+    console.log(topic);
+    content = <Article title={topic.title} body={topic.body}></Article>
+  }
   return (
   <div>
       <Header onSelect={()=> {
-        alert('header!!');
+        // alert('header!!');
+        // mode = 'WELCOME';
+        setMode('WELCOME');
       }}></Header>
-      <Nav data={topics} onSelect={()=> {
-        alert('nav!!');
+      <Nav data={topics} onSelect={(id)=> {
+        // alert('nav!!'+id);
+        // mode = 'READ';
+        setMode('READ');
+        setId(id);
       }}></Nav>
-      <Article title="Welcome!!!!!" body="Hello, WEB!"></Article>
+      {content}
       <br></br>
       <ButtonGroup variant="text" aria-label="text button group">
         <Button variant="outlined" onClick={()=> {
