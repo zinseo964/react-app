@@ -32,14 +32,21 @@ function App() {
     {id :2, title: 'css', body: 'css is ...'},
     {id :3, title: 'js', body: 'js is ...'}
   ];
+  function createHandler(){
+    alert('create!');
+  }
   return (
   <div>
-      <Header></Header>
+      <Header onSelect={()=> {
+        alert('header!!');
+      }}></Header>
       <Nav data={topics}></Nav>
       <Article title="Welcome!!!!!" body="Hello, WEB!"></Article>
       <br></br>
       <ButtonGroup variant="text" aria-label="text button group">
-        <Button variant="outlined">Create</Button>
+        <Button variant="outlined" onClick={()=> {
+          alert('create!');
+        }}>Create</Button>
         <Button variant="outlined">Update</Button>
       </ButtonGroup>&nbsp;
       <Button variant="outlined">Delete</Button>
