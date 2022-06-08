@@ -6,17 +6,12 @@ function Header(){ //component 이름은 반드시 대문자로 시작해야한�
 } //javascript 가 아니라 jsx 라는 언어임
 
 function Nav(props) {
-  console.log("nav",props.data);
-  const list = props.data.map((e)=> {
+  const liTags = props.data.map((e)=> {
     return <li key={e.id}><a href={'/read/'+e.id}>{e.title}</a></li>
   });
-  // const list = [
-  //   <li><a href = "/read/1">html</a></li>,
-  //   <li><a href = "/read/2">css</a></li>
-  // ];
   return <nav>
         <ol>
-          {list}
+          {liTags}
         </ol>
       </nav>
 }
@@ -32,7 +27,8 @@ function Article(props){
 function App() {
   const topics = [
     {id :1, title: 'html', body: 'html is ...'},
-    {id :2, title: 'css', body: 'css is ...'}
+    {id :2, title: 'css', body: 'css is ...'},
+    {id :3, title: 'js', body: 'js is ...'}
   ];
   return (
   <div>
