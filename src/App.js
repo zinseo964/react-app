@@ -37,12 +37,29 @@ function Article(props){
 
 function App() {
   const [mode, setMode] = useState('WELCOME'); //useState 값은 기본값
-  
-  const topics = [
+  const [nextId, setNextId] = useState(4);
+  const [topics, setTopics] = useState([
     {id :1, title: 'html', body: 'html is ...'},
     {id :2, title: 'css', body: 'css is ...'},
     {id :3, title: 'js', body: 'js is ...'}
-  ];
+  ]);
+
+  const Create = (props) => {
+    return <article>
+    <h2>Create</h2>
+    <form onSubmit={(e)=> {
+      e.preventDefault();
+      const title = e.target.title.value;
+      const body = e.target.body.value;
+      props.onCreate(title, body);
+    }}>
+      <p><input type='text' name = 'title' placeholder='title'></input></p>
+      <p><textarea type='text' name = 'body' placeholder='body'></textarea></p>
+      <p><input type='submit' value='Create'></input></p>
+    </form>
+  </article>
+  }
+
   const [id, setId] = useState(null);
   let content = null;
   if (mode === 'WELCOME'){
@@ -57,7 +74,20 @@ function App() {
     })[0];
     console.log(topic);
     content = <Article title={topic.title} body={topic.body}></Article>
+  } else if (mode === 'CREATE') { 
+      content = <Create onCreate={(title, body) => {
+        const newTopic = {id: nextId, title: title, body: body}; 
+        // topics.push(newTopic);
+        // setTopics(topics);
+        const newTopics = [...topics];
+        newTopics.push(newTopic);
+        setTopics(newTopics);
+        setId(nextId);
+        setMode('READ');
+        setNextId(nextId+1);
+      }}/>
   }
+
   return (
   <div>
       <Header onSelect={()=> {
@@ -75,11 +105,21 @@ function App() {
       <br></br>
       <ButtonGroup variant="text" aria-label="text button group">
         <Button variant="outlined" onClick={()=> {
-          alert('create!');
+          setMode('CREATE');
         }}>Create</Button>
         <Button variant="outlined">Update</Button>
       </ButtonGroup>&nbsp;
-      <Button variant="outlined">Delete</Button>
+      <Button variant="outlined" onClick={()=> {
+        const newTopics = topics.filter((e)=> {
+          if(e.id === id) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        setTopics(newTopics);
+        setMode('WELCOME');
+      }}>Delete</Button>
       <br></br>
   </div>
   );
