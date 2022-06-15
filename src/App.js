@@ -79,33 +79,49 @@ function App() {
   }
   return (
     <div>
-      <HeaderStyled onSelect={()=>{
-        setMode('WELCOME');
-      }}></HeaderStyled>
-      <Nav data={topics}  onSelect={(id)=>{
-        setMode('READ');
-        setId(id);
-      }}></Nav>
+      <HeaderStyled onSelect={headerHandler()}></HeaderStyled>
+      <Nav data={topics}  onSelect={navHandler()}></Nav>
       {content}
       <ButtonGroup>
-        <Button component={Link} to="/create" variant="outlined" onClick={()=>{
-          setMode('CREATE');
-        }}>Create</Button>        
+        <Button component={Link} to="/create" variant="outlined" onClick={createHandler()}>Create</Button>        
         <Button variant="outlined">Update</Button>
       </ButtonGroup>
-      <Button variant="outlined" onClick={()=>{
-        const newTopics = topics.filter((e)=>{
-          if(e.id === id){
-            return false;
-          } else {
-            return true;
-          }
-        });
-        setMode('WELCOME');
-        setTopics(newTopics);
-      }}>Delete</Button>
+      <Button variant="outlined" onClick={deleteHandler()}>Delete</Button>
     </div>
   );
+
+  function navHandler() {
+    return (id) => {
+      setMode('READ');
+      setId(id);
+    };
+  }
+
+  function deleteHandler() {
+    return () => {
+      const newTopics = topics.filter((e) => {
+        if (e.id === id) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+      setMode('WELCOME');
+      setTopics(newTopics);
+    };
+  }
+
+  function createHandler() {
+    return () => {
+      setMode('CREATE');
+    };
+  }
+
+  function headerHandler() {
+    return () => {
+      setMode('WELCOME');
+    };
+  }
 }
 
 export default App;
