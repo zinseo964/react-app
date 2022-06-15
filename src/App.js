@@ -1,94 +1,64 @@
-import logo from './logo.svg';
 import './App.css';
 import {useState} from 'react';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import styled from 'styled-components';
-import { Link } from "react-router-dom";
+import { Link, Routes, Route, useParams} from "react-router-dom";
+import { HeaderStyled } from './HeaderStyled';
+import { Article } from './Article';
+import { Nav } from './Nav';
+import { Create } from './Create';
 
-function Header(props){
-  return <header className={props.className}><h1><Link to="/" onClick={(evt)=>{    
-    props.onSelect();
-  }}>WWW</Link></h1></header>
-}
-
-const HeaderStyled = styled(Header)`
-    border-bottom:1px solid gray;
-    color:red;
-`;
-
-function Article(props){
-  return <article>
-    <h2>{props.title}</h2>
-    {props.body}
-  </article>
-}
-function Nav(props){
-  const liTags = props.data.map((e)=>{
-    return <li key={e.id}><Link to={'/read/'+e.id} onClick={(evt)=>{
-      props.onSelect(e.id);
-    }}>{e.title}</Link></li>
-  })
-  return <nav><ol>{liTags}</ol></nav>
-}
-function Create(props){
-  return <article>
-    <h2>Create</h2>
-    <form onSubmit={(evt)=>{
-      evt.preventDefault();
-      const title = evt.target.title.value;
-      const body = evt.target.body.value;
-      props.onCreate(title, body);
-    }}>
-      <p><input type="text" name="title" placeholder="title"></input></p>
-      <p><textarea name="body" placeholder="body"></textarea></p>
-      <p><input type="submit" value="Create"></input></p>
-    </form>
-  </article>;
-}
 function App() {
-  const [mode,setMode] = useState('WELCOME');
-  const [id, setId] = useState(null);
+  const [mode,setMode] = useState('WELCOME'); //todo 삭제예정
+  const [id, setId] = useState(null); // todo 삭제예정
   const [nextId, setNextId] = useState(3);
   const [topics, setTopics] = useState([
     {id:1, title:'html', body:'html is ...'},
     {id:2, title:'css', body:'css is ...'},
   ]);
-  let content = null;
-  if(mode === 'WELCOME'){
-    content = <Article title="Welcome" body="Hello, WEB!"></Article>
-  } else if(mode === 'READ'){
-    const topic = topics.filter(e=>{
+
+  return (
+    <div>
+      <HeaderStyled onSelect={headerHandler()}></HeaderStyled>
+      <Nav data={topics}  onSelect={navHandler()}></Nav>
+      <Routes>
+        <Route path="/" element={<Article title="Welcome" body="Hello, WEB!"></Article>}></Route>
+        <Route path="/create" element={<Create onCreate={onCreateHandler()}></Create>} />
+        <Route path="/read/:id" element={<Read topics={topics} ></Read>} />
+
+      </Routes>
+      <ButtonGroup>
+        <Button component={Link} to="/create" variant="outlined" onClick={createHandler()}>Create</Button>
+        <Button variant="outlined">Update</Button>
+      </ButtonGroup>
+      <Button variant="outlined" onClick={deleteHandler()}>Delete</Button>
+    </div>
+  );
+
+  function Read(props) {
+    const params = useParams();
+    const id = Number(params.id);
+    const topic = props.topics.filter(e=>{
       if(e.id === id) {
         return true;
       } else {
         return false;
       }
     })[0];
-    content = <Article title={topic.title} body={topic.body}></Article>
-  } else if(mode === 'CREATE'){
-    content = <Create onCreate={(title, body)=>{
-      const newTopic = {id:nextId, title, body}
-      const newTopics = [...topics]; 
+    return <Article title={topic.title} body={topic.body}></Article>
+  }
+
+  function onCreateHandler() {
+    return (title, body) => {
+      const newTopic = { id: nextId, title, body };
+      const newTopics = [...topics];
       newTopics.push(newTopic);
       setTopics(newTopics);
       setId(nextId);
       setMode('READ');
-      setNextId(nextId+1);
-    }}></Create>;
+      setNextId(nextId + 1);
+    };
   }
-  return (
-    <div>
-      <HeaderStyled onSelect={headerHandler()}></HeaderStyled>
-      <Nav data={topics}  onSelect={navHandler()}></Nav>
-      {content}
-      <ButtonGroup>
-        <Button component={Link} to="/create" variant="outlined" onClick={createHandler()}>Create</Button>        
-        <Button variant="outlined">Update</Button>
-      </ButtonGroup>
-      <Button variant="outlined" onClick={deleteHandler()}>Delete</Button>
-    </div>
-  );
 
   function navHandler() {
     return (id) => {
