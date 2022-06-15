@@ -2,11 +2,12 @@ import './App.css';
 import {useState} from 'react';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Link, Routes, Route, useParams} from "react-router-dom";
+import { Link, Routes, Route} from "react-router-dom";
 import { HeaderStyled } from './HeaderStyled';
 import { Article } from './Article';
 import { Nav } from './Nav';
 import { Create } from './Create';
+import { Read } from './Read';
 
 function App() {
   const [mode,setMode] = useState('WELCOME'); //todo 삭제예정
@@ -35,18 +36,7 @@ function App() {
     </div>
   );
 
-  function Read(props) {
-    const params = useParams();
-    const id = Number(params.id);
-    const topic = props.topics.filter(e=>{
-      if(e.id === id) {
-        return true;
-      } else {
-        return false;
-      }
-    })[0];
-    return <Article title={topic.title} body={topic.body}></Article>
-  }
+
 
   function onCreateHandler() {
     return (title, body) => {
