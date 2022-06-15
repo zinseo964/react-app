@@ -2,12 +2,27 @@ import './App.css';
 import {useState} from 'react';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { Link, Routes, Route} from "react-router-dom";
+import { Link, Routes, Route, useParams} from "react-router-dom";
 import { HeaderStyled } from './HeaderStyled';
 import { Article } from './Article';
 import { Nav } from './Nav';
 import { Create } from './Create';
 import { Read } from './Read';
+
+function Control(){
+  const params = useParams();
+  const id = Number(params.id);
+  let contextUI = null;
+  if(id) {
+    contextUI = <>
+      <Button variant="outlined">Update</Button>
+      <Button variant="outlined">Delete</Button>
+    </>
+  }
+  return <>
+    <Button component={Link} to="/create" variant="outlined">Create</Button>
+  </>
+}
 
 function App() {
   const [mode,setMode] = useState('WELCOME'); //todo 삭제예정
@@ -26,17 +41,20 @@ function App() {
         <Route path="/" element={<Article title="Welcome" body="Hello, WEB!"></Article>}></Route>
         <Route path="/create" element={<Create onCreate={onCreateHandler()}></Create>} />
         <Route path="/read/:id" element={<Read topics={topics} ></Read>} />
+        <Route path="/update/:id" element={<Read topics={topics} ></Read>} />
 
       </Routes>
-      <ButtonGroup>
-        <Button component={Link} to="/create" variant="outlined" onClick={createHandler()}>Create</Button>
-        <Button variant="outlined">Update</Button>
-      </ButtonGroup>
-      <Button variant="outlined" onClick={deleteHandler()}>Delete</Button>
+
+      <Routes>
+        {
+          ['/','/read/:id', '/update/:id'].map(path=>{
+            return <Route key={path} path = {path} element={<Control></Control>}></Route>
+          })
+        }
+      </Routes>
+      
     </div>
   );
-
-
 
   function onCreateHandler() {
     return (title, body) => {
