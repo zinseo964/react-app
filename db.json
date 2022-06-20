@@ -1,0 +1,24 @@
+{
+  "topics": [
+    {
+      "id": 1,
+      "title": "html5",
+      "body": "html5 is .."
+    },
+    {
+      "id": 2,
+      "title": "css3",
+      "body": "css3 is .."
+    },
+    {
+      "title": "no?",
+      "body": "yes!",
+      "id": 3
+    },
+    {
+      "title": "js5",
+      "body": "js5",
+      "id": 4
+    }
+  ]
+}
